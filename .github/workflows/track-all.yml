@@ -55,12 +55,18 @@ jobs:
 
             if grep -q '"message":' "data/$REPO/views.json"; then
               echo "⚠️ Failed to fetch $REPO (permission or token issue)"
-              head -n 5 "data/$REPO/views.json"
+              head -n 3 "data/$REPO/views.json"
               continue
             fi
 
-            echo "{ \"repo\": \"$REPO\", \"date\": \"$DATE\", \"views\": $(cat data/$REPO/views.json), \"clones\": $(cat data/$REPO/clones.json) }" \
-              > "data/$REPO/traffic-$DATE.json"
+            {
+              echo "{"
+              echo "  \"repo\": \"$REPO\","
+              echo "  \"date\": \"$DATE\","
+              echo "  \"views\": $(cat data/$REPO/views.json),"
+              echo "  \"clones\": $(cat data/$REPO/clones.json)"
+              echo "}"
+            } > "data/$REPO/traffic-$DATE.json"
 
             echo "✅ Successfully fetched $REPO"
             SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
@@ -68,4 +74,22 @@ jobs:
 
           echo ""
           echo "📊 Summary:"
-          echo "  Total repos listed: $
+          echo "  Total repos listed: $REPO_COUNT"
+          echo "  Successfully fetched: $SUCCESS_COUNT"
+
+          if [ "$REPO_COUNT" -eq 0 ]; then
+            echo "❌ No repositories found in repos.txt (empty or unreadable)."
+            exit 1
+          elif [ "$SUCCESS_COUNT" -eq 0 ]; then
+            echo "⚠️ None of the repositories returned valid data."
+            echo "   - Ensure token is a *classic* PAT with 'repo' scope."
+            exit 0
+          fi
+
+      - name: Commit updated stats
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add data/
+          git commit -m "Traffic update $(date -u +'%Y-%m-%d')" || echo "No changes"
+          git push
