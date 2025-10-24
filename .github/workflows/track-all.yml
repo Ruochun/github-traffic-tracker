@@ -32,16 +32,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TRAFFIC_TOKEN }}
         run: |
-          set -e
+          set -euo pipefail
           DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           echo "📅 Fetching traffic at $DATE"
           mkdir -p data
           REPO_COUNT=0
           SUCCESS_COUNT=0
 
-          while IFS= read -r REPO; do
+          # Normalize Windows line endings (CRLF → LF)
+          dos2unix repos.txt 2>/dev/null || true
+
+          while IFS= read -r REPO || [ -n "$REPO" ]; do
+            # Skip empty or commented lines
             [[ -z "$REPO" || "$REPO" == \#* ]] && continue
-            echo "➡️ Attempting to fetch data for repo: $REPO"
+
+            echo "➡️ Attempting to fetch data for repo: '$REPO'"
             REPO_COUNT=$((REPO_COUNT + 1))
             mkdir -p "data/$REPO"
 
@@ -70,7 +75,7 @@ jobs:
 
             echo "✅ Successfully fetched $REPO"
             SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
-          done < "${GITHUB_WORKSPACE}/repos.txt"
+          done < repos.txt
 
           echo ""
           echo "📊 Summary:"
@@ -85,6 +90,7 @@ jobs:
             echo "   - Ensure token is a *classic* PAT with 'repo' scope."
             exit 0
           fi
+
 
       - name: Commit updated stats
         run: |
