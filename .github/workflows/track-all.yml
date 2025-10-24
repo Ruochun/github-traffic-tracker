@@ -2,8 +2,8 @@ name: Track Traffic for All Public Repos
 
 on:
   schedule:
-    - cron: "0 0 * * *"     # runs daily at 00:00 UTC
-  workflow_dispatch:         # allow manual trigger
+    - cron: "0 0 * * *"   # runs daily at midnight UTC
+  workflow_dispatch:       # allow manual trigger
 
 jobs:
   collect-traffic:
@@ -15,35 +15,65 @@ jobs:
       - name: Checkout tracker repo
         uses: actions/checkout@v4
 
-      - name: Prepare data directory
-        run: mkdir -p data
+      - name: Verify repos.txt presence
+        run: |
+          echo "🗂️ Listing current directory:"
+          ls -R .
+          echo ""
+          echo "📄 Checking repos.txt content:"
+          if [ -f repos.txt ]; then
+            cat repos.txt
+          else
+            echo "❌ repos.txt not found at repository root!"
+            exit 1
+          fi
 
       - name: Fetch traffic for all repos
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TRAFFIC_TOKEN }}
         run: |
+          set -e
           DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          echo "Fetching traffic at $DATE"
+          echo "📅 Fetching traffic at $DATE"
+
+          REPO_COUNT=0
+          SUCCESS_COUNT=0
+          mkdir -p data
 
           while IFS= read -r REPO; do
-            [ -z "$REPO" ] && continue
-            echo "➡️  $REPO"
+            # Skip blank lines or comment lines starting with '#'
+            [[ -z "$REPO" || "$REPO" == \#* ]] && continue
 
+            echo "➡️ Attempting to fetch data for repo: $REPO"
+            REPO_COUNT=$((REPO_COUNT + 1))
             mkdir -p "data/$REPO"
-            curl -s -H "Authorization: token $GITHUB_TOKEN" \
-              "https://api.github.com/repos/$REPO/traffic/views" > "data/$REPO/views.json"
-            curl -s -H "Authorization: token $GITHUB_TOKEN" \
-              "https://api.github.com/repos/$REPO/traffic/clones" > "data/$REPO/clones.json"
 
-            # wrap together with timestamp
-            echo "{ \"repo\": \"$REPO\", \"date\": \"$DATE\", \"views\": $(cat data/$REPO/views.json), \"clones\": $(cat data/$REPO/clones.json) }" \
+            VIEW_JSON=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                "https://api.github.com/repos/$REPO/traffic/views")
+
+            if echo "$VIEW_JSON" | grep -q '"message":'; then
+              echo "⚠️ Failed to read traffic for $REPO — likely missing permission or invalid token."
+              echo "$VIEW_JSON"
+              continue
+            fi
+
+            CLONE_JSON=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                "https://api.github.com/repos/$REPO/traffic/clones")
+
+            echo "$VIEW_JSON" > "data/$REPO/views.json"
+            echo "$CLONE_JSON" > "data/$REPO/clones.json"
+
+            echo "{ \"repo\": \"$REPO\", \"date\": \"$DATE\", \"views\": $VIEW_JSON, \"clones\": $CLONE_JSON }" \
               > "data/$REPO/traffic-$DATE.json"
-          done < repos.txt
 
-      - name: Commit updated stats
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add data/
-          git commit -m "Traffic update $(date -u +'%Y-%m-%d')" || echo "No changes"
-          git push
+            echo "✅ Successfully fetched: $REPO"
+            SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+          done < "${GITHUB_WORKSPACE}/repos.txt"
+
+          echo ""
+          echo "📊 Summary:"
+          echo "  Total repos listed: $REPO_COUNT"
+          echo "  Successfully fetched: $SUCCESS_COUNT"
+
+          if [ "$REPO_COUNT" -eq 0 ]; then
+            echo "❌ No repositories found in repos.txt
