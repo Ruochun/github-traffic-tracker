@@ -2,8 +2,8 @@ name: Track Traffic for All Public Repos
 
 on:
   schedule:
-    - cron: "0 0 * * *"   # runs daily at midnight UTC
-  workflow_dispatch:       # allow manual trigger
+    - cron: "0 0 * * *"
+  workflow_dispatch:
 
 jobs:
   collect-traffic:
@@ -35,45 +35,37 @@ jobs:
           set -e
           DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           echo "📅 Fetching traffic at $DATE"
-
+          mkdir -p data
           REPO_COUNT=0
           SUCCESS_COUNT=0
-          mkdir -p data
 
           while IFS= read -r REPO; do
-            # Skip blank lines or comment lines starting with '#'
             [[ -z "$REPO" || "$REPO" == \#* ]] && continue
-
             echo "➡️ Attempting to fetch data for repo: $REPO"
             REPO_COUNT=$((REPO_COUNT + 1))
             mkdir -p "data/$REPO"
 
-            VIEW_JSON=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-                "https://api.github.com/repos/$REPO/traffic/views")
+            curl -s -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/$REPO/traffic/views" \
+              -o "data/$REPO/views.json"
 
-            if echo "$VIEW_JSON" | grep -q '"message":'; then
-              echo "⚠️ Failed to read traffic for $REPO — likely missing permission or invalid token."
-              echo "$VIEW_JSON"
+            curl -s -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/$REPO/traffic/clones" \
+              -o "data/$REPO/clones.json"
+
+            if grep -q '"message":' "data/$REPO/views.json"; then
+              echo "⚠️ Failed to fetch $REPO (permission or token issue)"
+              head -n 5 "data/$REPO/views.json"
               continue
             fi
 
-            CLONE_JSON=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
-                "https://api.github.com/repos/$REPO/traffic/clones")
-
-            echo "$VIEW_JSON" > "data/$REPO/views.json"
-            echo "$CLONE_JSON" > "data/$REPO/clones.json"
-
-            echo "{ \"repo\": \"$REPO\", \"date\": \"$DATE\", \"views\": $VIEW_JSON, \"clones\": $CLONE_JSON }" \
+            echo "{ \"repo\": \"$REPO\", \"date\": \"$DATE\", \"views\": $(cat data/$REPO/views.json), \"clones\": $(cat data/$REPO/clones.json) }" \
               > "data/$REPO/traffic-$DATE.json"
 
-            echo "✅ Successfully fetched: $REPO"
+            echo "✅ Successfully fetched $REPO"
             SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
           done < "${GITHUB_WORKSPACE}/repos.txt"
 
           echo ""
           echo "📊 Summary:"
-          echo "  Total repos listed: $REPO_COUNT"
-          echo "  Successfully fetched: $SUCCESS_COUNT"
-
-          if [ "$REPO_COUNT" -eq 0 ]; then
-            echo "❌ No repositories found in repos.txt
+          echo "  Total repos listed: $
