@@ -1,4 +1,7 @@
 {
+  "repo": "projectchrono/DEM-Engine",
+  "date": "2025-11-19T01:43:37Z",
+  "views": {
   "count": 879,
   "uniques": 121,
   "views": [
@@ -73,4 +76,76 @@
       "uniques": 11
     }
   ]
+},
+  "clones": {
+  "count": 213,
+  "uniques": 118,
+  "clones": [
+    {
+      "timestamp": "2025-11-05T00:00:00Z",
+      "count": 33,
+      "uniques": 26
+    },
+    {
+      "timestamp": "2025-11-06T00:00:00Z",
+      "count": 18,
+      "uniques": 16
+    },
+    {
+      "timestamp": "2025-11-07T00:00:00Z",
+      "count": 18,
+      "uniques": 9
+    },
+    {
+      "timestamp": "2025-11-08T00:00:00Z",
+      "count": 11,
+      "uniques": 8
+    },
+    {
+      "timestamp": "2025-11-09T00:00:00Z",
+      "count": 12,
+      "uniques": 5
+    },
+    {
+      "timestamp": "2025-11-10T00:00:00Z",
+      "count": 24,
+      "uniques": 12
+    },
+    {
+      "timestamp": "2025-11-11T00:00:00Z",
+      "count": 15,
+      "uniques": 11
+    },
+    {
+      "timestamp": "2025-11-12T00:00:00Z",
+      "count": 12,
+      "uniques": 4
+    },
+    {
+      "timestamp": "2025-11-13T00:00:00Z",
+      "count": 10,
+      "uniques": 6
+    },
+    {
+      "timestamp": "2025-11-14T00:00:00Z",
+      "count": 23,
+      "uniques": 5
+    },
+    {
+      "timestamp": "2025-11-15T00:00:00Z",
+      "count": 8,
+      "uniques": 5
+    },
+    {
+      "timestamp": "2025-11-16T00:00:00Z",
+      "count": 16,
+      "uniques": 16
+    },
+    {
+      "timestamp": "2025-11-17T00:00:00Z",
+      "count": 13,
+      "uniques": 12
+    }
+  ]
+}
 }
