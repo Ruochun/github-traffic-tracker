@@ -1,0 +1,156 @@
+{
+  "repo": "projectchrono/DEM-Engine",
+  "date": "2026-09-07T08:39:32Z",
+  "views": {
+  "count": 366,
+  "uniques": 117,
+  "views": [
+    {
+      "timestamp": "2026-08-23T00:00:00Z",
+      "count": 34,
+      "uniques": 7
+    },
+    {
+      "timestamp": "2026-08-24T00:00:00Z",
+      "count": 22,
+      "uniques": 13
+    },
+    {
+      "timestamp": "2026-08-25T00:00:00Z",
+      "count": 24,
+      "uniques": 9
+    },
+    {
+      "timestamp": "2026-08-26T00:00:00Z",
+      "count": 17,
+      "uniques": 9
+    },
+    {
+      "timestamp": "2026-08-27T00:00:00Z",
+      "count": 24,
+      "uniques": 10
+    },
+    {
+      "timestamp": "2026-08-28T00:00:00Z",
+      "count": 21,
+      "uniques": 15
+    },
+    {
+      "timestamp": "2026-08-29T00:00:00Z",
+      "count": 32,
+      "uniques": 9
+    },
+    {
+      "timestamp": "2026-08-30T00:00:00Z",
+      "count": 22,
+      "uniques": 9
+    },
+    {
+      "timestamp": "2026-08-31T00:00:00Z",
+      "count": 14,
+      "uniques": 8
+    },
+    {
+      "timestamp": "2026-09-01T00:00:00Z",
+      "count": 18,
+      "uniques": 13
+    },
+    {
+      "timestamp": "2026-09-02T00:00:00Z",
+      "count": 27,
+      "uniques": 17
+    },
+    {
+      "timestamp": "2026-09-03T00:00:00Z",
+      "count": 60,
+      "uniques": 15
+    },
+    {
+      "timestamp": "2026-09-04T00:00:00Z",
+      "count": 24,
+      "uniques": 11
+    },
+    {
+      "timestamp": "2026-09-05T00:00:00Z",
+      "count": 27,
+      "uniques": 11
+    }
+  ]
+},
+  "clones": {
+  "count": 1036,
+  "uniques": 155,
+  "clones": [
+    {
+      "timestamp": "2026-08-23T00:00:00Z",
+      "count": 14,
+      "uniques": 13
+    },
+    {
+      "timestamp": "2026-08-24T00:00:00Z",
+      "count": 17,
+      "uniques": 9
+    },
+    {
+      "timestamp": "2026-08-25T00:00:00Z",
+      "count": 13,
+      "uniques": 10
+    },
+    {
+      "timestamp": "2026-08-26T00:00:00Z",
+      "count": 5,
+      "uniques": 4
+    },
+    {
+      "timestamp": "2026-08-27T00:00:00Z",
+      "count": 8,
+      "uniques": 6
+    },
+    {
+      "timestamp": "2026-08-28T00:00:00Z",
+      "count": 9,
+      "uniques": 9
+    },
+    {
+      "timestamp": "2026-08-29T00:00:00Z",
+      "count": 17,
+      "uniques": 11
+    },
+    {
+      "timestamp": "2026-08-30T00:00:00Z",
+      "count": 32,
+      "uniques": 19
+    },
+    {
+      "timestamp": "2026-08-31T00:00:00Z",
+      "count": 15,
+      "uniques": 11
+    },
+    {
+      "timestamp": "2026-09-01T00:00:00Z",
+      "count": 17,
+      "uniques": 12
+    },
+    {
+      "timestamp": "2026-09-02T00:00:00Z",
+      "count": 25,
+      "uniques": 16
+    },
+    {
+      "timestamp": "2026-09-03T00:00:00Z",
+      "count": 792,
+      "uniques": 14
+    },
+    {
+      "timestamp": "2026-09-04T00:00:00Z",
+      "count": 34,
+      "uniques": 15
+    },
+    {
+      "timestamp": "2026-09-05T00:00:00Z",
+      "count": 38,
+      "uniques": 16
+    }
+  ]
+}
+}
